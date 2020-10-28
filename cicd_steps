@@ -1,0 +1,5 @@
+1. Push image to github
+2. travis will run test cases on test image
+3. travis will build prod images and push them to dockerhub
+4. travis will push code to AWS elastic beanstalk
+5. EB will pull image from dockerhub 
