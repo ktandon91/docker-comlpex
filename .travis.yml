@@ -1,0 +1,34 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t ktandon1991/react-test -f ./client/Dockerfiler.dev ./client
+
+scripts:
+    - docker run -e CI=true ktandon1991/react-test npm test 
+
+after_success:
+    - docker build -t ktandon1991/docker-complex-client ./client
+    - docker build -t ktandon1991/docker-complex-nginx ./nginx
+    - docker build -t ktandon1991/docker-complex-server ./server
+    - docker build -t ktandon1991/docker-complex-worker ./worker
+    #login to dockerhub
+    - echo "$DOCKER_PASSWORD"| docker login -u "$DOCKER_ID" --password-stdin
+    # take those images and push to dockerhub
+    - docker push ktandon1991/docker-complex-client
+    - docker push ktandon1991/docker-complex-nginx
+    - docker push ktandon1991/docker-complex-server
+    - docker push ktandon1991/docker-complex-worker
+
+deploy:
+    provider: elasticbeanstalk
+    region: "us-west-2"
+    app: docker-complex
+    env: Docker-complex-env
+    bucket_name: elasticbeanstalk-us-west-1-32151251
+    bucket_path: docker-complex
+    on:
+        branch: main
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY    

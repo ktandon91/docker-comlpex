@@ -1,0 +1,6 @@
+Specify docker as dependency
+Build test version of react project
+Run tests
+Build prod version of all projects
+Push all prod images to dockerhub
+Tell Elastic Beanstalk to update
